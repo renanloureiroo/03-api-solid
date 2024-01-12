@@ -1,5 +1,5 @@
-import fastify from "fastify";
+import fastify from 'fastify'
 
-const app = fastify();
+const app = fastify()
 
-export { app };
+export { app }
