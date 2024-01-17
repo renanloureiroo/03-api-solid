@@ -2,7 +2,7 @@ import { Prisma, User } from '@prisma/client'
 import { IUsersRepository } from './users-repository'
 import { randomUUID } from 'node:crypto'
 
-class InMemoryRepository implements IUsersRepository {
+class InMemoryUsersRepository implements IUsersRepository {
   private users: Array<User>
 
   constructor() {
@@ -27,4 +27,4 @@ class InMemoryRepository implements IUsersRepository {
   }
 }
 
-export { InMemoryRepository }
+export { InMemoryUsersRepository }
