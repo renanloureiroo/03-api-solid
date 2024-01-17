@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { RegisterUseCase } from '@/use-cases/register'
 import { PrismaUsersRepository } from '@/repositories/users-repository/prisma/prisma.users.repository'
 import { UserAlreadyExists } from '@/use-cases/errors/user-already-exists'
+import { EncryptProvider } from '@/shared/providers/encrypt/encrypt'
 
 export async function registerController(
   request: FastifyRequest,
@@ -17,7 +18,10 @@ export async function registerController(
   try {
     const { name, email, password } = registerBodySchema.parse(request.body)
 
-    const registerUseCase = new RegisterUseCase(new PrismaUsersRepository())
+    const registerUseCase = new RegisterUseCase(
+      new PrismaUsersRepository(),
+      new EncryptProvider(),
+    )
 
     await registerUseCase.execute({
       name,

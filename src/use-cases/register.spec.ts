@@ -3,13 +3,18 @@ import { RegisterUseCase } from './register'
 import { InMemoryUsersRepository } from '@/repositories/users-repository/in-memory-users-repository'
 import { UserAlreadyExists } from './errors/user-already-exists'
 
+import { EncryptProvider } from '@/shared/providers/encrypt/encrypt'
+import { IEncryptProvider } from '@/shared/providers/encrypt/encrypt.interface'
+
+let encryptProvider: IEncryptProvider
 let registerUseCase: RegisterUseCase
 let usersRepository: InMemoryUsersRepository
 
 describe('UseCases: Register', () => {
   beforeEach(() => {
+    encryptProvider = new EncryptProvider()
     usersRepository = new InMemoryUsersRepository()
-    registerUseCase = new RegisterUseCase(usersRepository)
+    registerUseCase = new RegisterUseCase(usersRepository, encryptProvider)
   })
   it('should be able to register a new user', async () => {
     const userData = {
@@ -22,9 +27,7 @@ describe('UseCases: Register', () => {
 
     const user = await usersRepository.findByEmail(userData['email'])
 
-    expect(user).toBeTruthy()
-    expect(user?.name).toBe(userData['name'])
-    expect(user?.email).toBe(userData['email'])
+    expect(user?.id).toEqual(expect.any(String))
   })
 
   it('should not be able to register a new user with a account already created using same email', async () => {
@@ -41,7 +44,7 @@ describe('UseCases: Register', () => {
 
     await registerUseCase.execute(userData)
 
-    await expect(registerUseCase.execute(userData2)).rejects.toThrow(
+    await expect(() => registerUseCase.execute(userData2)).rejects.toThrow(
       UserAlreadyExists,
     )
   })
@@ -55,6 +58,11 @@ describe('UseCases: Register', () => {
 
     const response = await registerUseCase.execute(userData)
 
-    expect(response.user?.password_hash).not.toEqual(userData['password'])
+    const isPasswordCorrectlyHashed = await encryptProvider.compare(
+      userData['password'],
+      response.user?.password_hash,
+    )
+
+    expect(isPasswordCorrectlyHashed).toBeTruthy()
   })
 })

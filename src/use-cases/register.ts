@@ -1,7 +1,7 @@
 import { IUsersRepository } from '@/repositories/users-repository/users-repository'
-import { hash } from 'bcryptjs'
 import { UserAlreadyExists } from './errors/user-already-exists'
 import { User } from '@prisma/client'
+import { IEncryptProvider } from '@/shared/providers/encrypt/encrypt-interface'
 
 export interface RegisterUseCaseDTO {
   name: string
@@ -14,7 +14,10 @@ interface RegisterUseCaseResponse {
 }
 
 class RegisterUseCase {
-  constructor(private readonly usersRepository: IUsersRepository) {}
+  constructor(
+    private readonly usersRepository: IUsersRepository,
+    private readonly encryptProvider: IEncryptProvider,
+  ) {}
 
   async execute({
     name,
@@ -27,7 +30,7 @@ class RegisterUseCase {
       throw new UserAlreadyExists()
     }
 
-    const password_hash = await hash(password, 8)
+    const password_hash = await this.encryptProvider.hash(password)
 
     const user = await this.usersRepository.create({
       name,
