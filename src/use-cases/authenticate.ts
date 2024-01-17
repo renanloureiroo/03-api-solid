@@ -1,8 +1,9 @@
 import { IUsersRepository } from '@/repositories/users-repository/users-repository.interface'
 
 import { IEncryptProvider } from '@/shared/providers/encrypt/encrypt.interface'
-import { InvalidCredentials } from './errors/user-unauthorized'
+
 import { User } from '@prisma/client'
+import { InvalidCredentials } from './errors/user-invalid-credentials'
 
 interface AuthenticateUseCaseDTO {
   email: string
@@ -13,7 +14,7 @@ interface AuthenticateUseCaseResponse {
   user: User
 }
 
-class AuthenticationUseCase {
+class AuthenticateUseCase {
   constructor(
     private readonly usersRepository: IUsersRepository,
     private readonly encryptProvider: IEncryptProvider,
@@ -44,4 +45,4 @@ class AuthenticationUseCase {
   }
 }
 
-export { AuthenticationUseCase }
+export { AuthenticateUseCase }

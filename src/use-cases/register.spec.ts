@@ -7,14 +7,14 @@ import { EncryptProvider } from '@/shared/providers/encrypt/encrypt'
 import { IEncryptProvider } from '@/shared/providers/encrypt/encrypt.interface'
 
 let encryptProvider: IEncryptProvider
-let registerUseCase: RegisterUseCase
 let usersRepository: InMemoryUsersRepository
+let sut: RegisterUseCase
 
 describe('UseCases: Register', () => {
   beforeEach(() => {
     encryptProvider = new EncryptProvider()
     usersRepository = new InMemoryUsersRepository()
-    registerUseCase = new RegisterUseCase(usersRepository, encryptProvider)
+    sut = new RegisterUseCase(usersRepository, encryptProvider)
   })
   it('should be able to register a new user', async () => {
     const userData = {
@@ -23,7 +23,7 @@ describe('UseCases: Register', () => {
       password: 'mocked_password',
     }
 
-    await registerUseCase.execute(userData)
+    await sut.execute(userData)
 
     const user = await usersRepository.findByEmail(userData['email'])
 
@@ -42,9 +42,9 @@ describe('UseCases: Register', () => {
       password: 'mocked_password',
     }
 
-    await registerUseCase.execute(userData)
+    await sut.execute(userData)
 
-    await expect(() => registerUseCase.execute(userData2)).rejects.toThrow(
+    await expect(() => sut.execute(userData2)).rejects.toThrow(
       UserAlreadyExists,
     )
   })
@@ -56,7 +56,7 @@ describe('UseCases: Register', () => {
       password: 'mocked_password',
     }
 
-    const response = await registerUseCase.execute(userData)
+    const response = await sut.execute(userData)
 
     const isPasswordCorrectlyHashed = await encryptProvider.compare(
       userData['password'],
