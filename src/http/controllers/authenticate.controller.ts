@@ -1,11 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
-
-import { PrismaUsersRepository } from '@/repositories/users-repository/prisma/prisma.users.repository'
-
-import { EncryptProvider } from '@/shared/providers/encrypt/encrypt'
-import { AuthenticateUseCase } from '@/use-cases/authenticate'
 import { InvalidCredentials } from '@/use-cases/errors/user-invalid-credentials'
+import { makeAuthenticateUseCase } from '@/use-cases/factories/make-authenticate-use-case'
 
 export async function authenticateController(
   request: FastifyRequest,
@@ -18,10 +14,7 @@ export async function authenticateController(
   try {
     const { email, password } = authenticateBodySchema.parse(request.body)
 
-    const authenticateUseCase = new AuthenticateUseCase(
-      new PrismaUsersRepository(),
-      new EncryptProvider(),
-    )
+    const authenticateUseCase = makeAuthenticateUseCase()
 
     const response = await authenticateUseCase.execute({
       email,

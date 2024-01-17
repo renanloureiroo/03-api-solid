@@ -1,7 +1,7 @@
-import { IUsersRepository } from '@/repositories/users-repository/users-repository'
+import { IUsersRepository } from '@/repositories/users-repository/users-repository.interface'
 import { UserAlreadyExists } from './errors/user-already-exists'
 import { User } from '@prisma/client'
-import { IEncryptProvider } from '@/shared/providers/encrypt/encrypt-interface'
+import { IEncryptProvider } from '@/shared/providers/encrypt/encrypt.interface'
 
 export interface RegisterUseCaseDTO {
   name: string
