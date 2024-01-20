@@ -8,6 +8,7 @@ class InMemoryCheckInsRepository implements ICheckInsRepository {
   constructor() {
     this.checkIns = []
   }
+
   async countByUserId(userId: string): Promise<number> {
     const checkIns = this.checkIns.filter((checkIn) => {
       return checkIn.user_id === userId

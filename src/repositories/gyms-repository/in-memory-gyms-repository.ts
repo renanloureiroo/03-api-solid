@@ -1,14 +1,37 @@
 import { Gym, Prisma } from '@prisma/client'
 
 import { randomUUID } from 'node:crypto'
-import { IGymsRepository } from './gyms-repository.interface'
+import {
+  FindManyNearbyParams,
+  IGymsRepository,
+} from './gyms-repository.interface'
 import { Decimal } from '@prisma/client/runtime/library'
+import { calculateDistance } from '@/utils/calculate-distance-between-points'
+import { MAX_DISTANCE_VIEW_GYM_ALLOWED } from '@/utils/constants'
 
 class InMemoryGymsRepository implements IGymsRepository {
   private gyms: Array<Gym>
 
   constructor() {
     this.gyms = []
+  }
+  async findManyNearby(params: FindManyNearbyParams): Promise<Gym[]> {
+    const gyms = this.gyms.filter((gym) => {
+      const distance = calculateDistance(
+        {
+          latitude: gym.latitude.toNumber(),
+          longitude: gym.longitude.toNumber(),
+        },
+        {
+          latitude: params.latitude,
+          longitude: params.longitude,
+        },
+        'km',
+      )
+      return distance < MAX_DISTANCE_VIEW_GYM_ALLOWED
+    })
+
+    return gyms
   }
   search(query: string, page: number): Promise<Gym[]> {
     const skip = (page - 1) * 20

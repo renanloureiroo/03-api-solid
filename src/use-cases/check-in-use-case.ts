@@ -9,6 +9,7 @@ import {
 } from '@/utils/calculate-distance-between-points'
 import { MaxDistance } from './errors/max-distance'
 import { MaxNumberOfCheckIns } from './errors/max-number-of-check-ins'
+import { MAX_DISTANCE_ALLOWED } from '@/utils/constants'
 
 interface CheckInUseCaseDTO {
   userId: string
@@ -20,8 +21,6 @@ interface CheckInUseCaseDTO {
 interface CheckInUseCaseResponse {
   checkIn: CheckIn
 }
-
-const MAX_DISTANCE_ALLOWED = 100 // meters
 
 class CheckInUseCase {
   constructor(
