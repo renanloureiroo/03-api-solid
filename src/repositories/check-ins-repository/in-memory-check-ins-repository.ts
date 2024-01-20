@@ -8,6 +8,26 @@ class InMemoryCheckInsRepository implements ICheckInsRepository {
   constructor() {
     this.checkIns = []
   }
+  async countByUserId(userId: string): Promise<number> {
+    const checkIns = this.checkIns.filter((checkIn) => {
+      return checkIn.user_id === userId
+    })
+
+    return checkIns.length
+  }
+  async findManyByUserId(userId: string, page: number): Promise<CheckIn[]> {
+    const itensPerPage = 20
+    const checkIns = this.checkIns.filter((checkIn) => {
+      return checkIn.user_id === userId
+    })
+    const paginatedCheckIns = checkIns.slice(
+      (page - 1) * itensPerPage,
+      page * itensPerPage,
+    )
+
+    return paginatedCheckIns
+  }
+
   async findByUserIdOnDate(
     userId: string,
     date: Date,
@@ -24,6 +44,7 @@ class InMemoryCheckInsRepository implements ICheckInsRepository {
     })
     return checkIn ? checkIn : null
   }
+
   async create(data: Prisma.CheckInUncheckedCreateInput): Promise<CheckIn> {
     const checkIn: CheckIn = {
       id: data.id ? data.id : randomUUID(),
