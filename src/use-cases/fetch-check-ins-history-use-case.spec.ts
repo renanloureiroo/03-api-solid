@@ -53,7 +53,7 @@ describe('Use Case: Fetch check ins history', () => {
 
   it('should be able to fetch paginated check-in history', async () => {
     for (let i = 1; i < 26; i++) {
-      vi.setSystemTime(new Date(2024, 0, 20, 4, i, 0))
+      vi.setSystemTime(new Date(2024, 0, i, 4, 40, 0))
       await checkInsRepository.create({
         gym_id: `gym_id_${i}`,
         user_id: 'user_id',
@@ -92,7 +92,7 @@ describe('Use Case: Fetch check ins history', () => {
 
   it('should not be possible to search the paginated check-in history with a greater number of pages than the total', async () => {
     for (let i = 1; i < 26; i++) {
-      vi.setSystemTime(new Date(2024, 0, 20, 4, i, 0))
+      vi.setSystemTime(new Date(2024, 0, i, 4, 40, 0))
       await checkInsRepository.create({
         gym_id: `gym_id_${i}`,
         user_id: 'user_id',
