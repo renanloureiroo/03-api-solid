@@ -12,12 +12,13 @@ class InMemoryGymsRepository implements IGymsRepository {
   }
   async create(data: Prisma.GymCreateInput): Promise<Gym> {
     const gym = {
-      id: randomUUID(),
-      ...data,
-      description: data.description ? data.description : null,
-      phone: data.phone ? data.phone : null,
-      latitude: new Decimal(data.latitude as number),
-      longitude: new Decimal(data.longitude as number),
+      id: data.id ?? randomUUID(),
+      title: data.title,
+      description: data.description ?? null,
+      phone: data.phone ?? null,
+      latitude: new Decimal(data.latitude.toString()),
+      longitude: new Decimal(data.longitude.toString()),
+      created_at: new Date(),
     }
     this.gyms.push(gym)
     return gym

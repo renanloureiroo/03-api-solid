@@ -7,6 +7,8 @@ import {
   Point,
   calculateDistance,
 } from '@/utils/calculate-distance-between-points'
+import { MaxDistance } from './errors/max-distance'
+import { MaxNumberOfCheckIns } from './errors/max-number-of-check-ins'
 
 interface CheckInUseCaseDTO {
   userId: string
@@ -52,7 +54,7 @@ class CheckInUseCase {
     const distance = calculateDistance(userLocation, gymLocation, 'm')
 
     if (distance > MAX_DISTANCE_ALLOWED) {
-      throw new Error('User is too far from gym')
+      throw new MaxDistance()
     }
 
     const checkInOnSameDay = await this.checkInsRepository.findByUserIdOnDate(
@@ -61,7 +63,7 @@ class CheckInUseCase {
     )
 
     if (checkInOnSameDay) {
-      throw new Error('User already checked in today')
+      throw new MaxNumberOfCheckIns()
     }
 
     const checkIn = await this.checkInsRepository.create({
