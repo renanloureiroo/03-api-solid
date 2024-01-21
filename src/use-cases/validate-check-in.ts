@@ -1,6 +1,9 @@
 import { ICheckInsRepository } from '@/repositories/check-ins-repository/check-ins-repository.interface'
 import { CheckIn } from '@prisma/client'
 import { ResourceNotFound } from './errors/resource-not-found'
+import dayjs from 'dayjs'
+import { DISTANCE_IN_MINUTES_FROM_CHECK_IN_CREATION_ALLOWED } from '@/utils/constants'
+import { MaxTime } from './errors/max-time'
 
 interface ValidateCheckInDTO {
   checkInId: string
@@ -19,6 +22,18 @@ class ValidateCheckInUseCase {
 
     if (!checkIn) {
       throw new ResourceNotFound()
+    }
+
+    const distanceInMinutesFromCheckInCreation = dayjs(new Date()).diff(
+      checkIn.created_at,
+      'minute',
+    )
+
+    if (
+      distanceInMinutesFromCheckInCreation >
+      DISTANCE_IN_MINUTES_FROM_CHECK_IN_CREATION_ALLOWED
+    ) {
+      throw new MaxTime()
     }
 
     Object.assign(checkIn, {
