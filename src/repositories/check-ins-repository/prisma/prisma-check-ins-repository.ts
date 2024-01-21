@@ -3,6 +3,21 @@ import { ICheckInsRepository } from '../check-ins-repository.interface'
 import { CheckIn, Prisma } from '@prisma/client'
 
 class PrismaCheckInsRepository implements ICheckInsRepository {
+  update(data: CheckIn): Promise<CheckIn> {
+    return prisma.checkIn.update({
+      where: {
+        id: data.id,
+      },
+      data: data,
+    })
+  }
+  findById(id: string): Promise<CheckIn | null> {
+    return prisma.checkIn.findUnique({
+      where: {
+        id: id,
+      },
+    })
+  }
   countByUserId(userId: string): Promise<number> {
     return prisma.checkIn.count({
       where: {

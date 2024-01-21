@@ -8,6 +8,20 @@ class InMemoryCheckInsRepository implements ICheckInsRepository {
   constructor() {
     this.checkIns = []
   }
+  async update(data: CheckIn): Promise<CheckIn> {
+    const checkInIndex = this.checkIns.findIndex(
+      (checkIn) => checkIn.id === data.id,
+    )
+    if (checkInIndex >= 0) {
+      this.checkIns[checkInIndex] = data
+    }
+
+    return data
+  }
+  async findById(id: string): Promise<CheckIn | null> {
+    const checkIn = this.checkIns.find((checkIn) => checkIn.id === id)
+    return checkIn ? checkIn : null
+  }
 
   async countByUserId(userId: string): Promise<number> {
     const checkIns = this.checkIns.filter((checkIn) => {
