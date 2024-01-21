@@ -1,5 +1,5 @@
 import { ICheckInsRepository } from '@/repositories/check-ins-repository/check-ins-repository.interface'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ValidateCheckInUseCase } from './validate-check-in'
 import { InMemoryCheckInsRepository } from '@/repositories/check-ins-repository/in-memory-check-ins-repository'
 import { ResourceNotFound } from './errors/resource-not-found'
@@ -14,6 +14,10 @@ describe('Use Case: Validate Check In', () => {
     sut = new ValidateCheckInUseCase(checkInsRepository)
 
     vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
   it('should be able to validate a check in', async () => {
     const checkIn = await checkInsRepository.create({
