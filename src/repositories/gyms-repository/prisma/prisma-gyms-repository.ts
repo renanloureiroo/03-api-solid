@@ -7,19 +7,21 @@ import {
 import { prisma } from '@/lib/prisma'
 
 class PrismaGymsRepository implements IGymsRepository {
-  async findManyNearby(params: FindManyNearbyParams): Promise<Gym[]> {
-    return prisma.gym.findMany({
-      where: {
-        latitude: {
-          gte: params.latitude - 0.1,
-          lte: params.latitude + 0.1,
-        },
-        longitude: {
-          gte: params.longitude - 0.1,
-          lte: params.longitude + 0.1,
-        },
-      },
-    })
+  async findManyNearby({
+    latitude,
+    longitude,
+  }: FindManyNearbyParams): Promise<Gym[]> {
+    return prisma.$queryRaw<Gym[]>`
+       SELECT *, 
+    ( 6371 * acos( cos( radians(${latitude}) ) 
+    * cos( radians( latitude ) ) 
+    * cos( radians( longitude ) - radians(${longitude}) ) 
+    + sin( radians(${latitude}) ) 
+    * sin( radians( latitude ) ) ) ) AS distance 
+    FROM gyms 
+    HAVING distance <= 10 
+    ORDER BY distance
+    `
   }
   async search(query: string, page: number): Promise<Gym[]> {
     const skip = (page - 1) * 20

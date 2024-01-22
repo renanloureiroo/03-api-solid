@@ -8,5 +8,6 @@ export default defineConfig({
       include: ['src/**/*.{ts,tsx}'],
       exclude: ['src/**/*.spec.{ts,tsx}', 'src/**/*.{d.ts,interface.ts}'],
     },
+    environmentMatchGlobs: [['src/http/controllers/**', 'prisma']],
   },
 })

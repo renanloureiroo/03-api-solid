@@ -27,7 +27,9 @@ export async function registerController(
   } catch (error) {
     if (error instanceof UserAlreadyExists) {
       return reply.status(409).send({
-        message: error.message,
+        error: {
+          message: error.message,
+        },
       })
     }
 

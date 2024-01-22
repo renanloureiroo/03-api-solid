@@ -20,10 +20,21 @@ export async function authenticateController(
       email,
       password,
     })
-    return reply.status(200).send(response)
+
+    const token = await reply.jwtSign(
+      {},
+      {
+        sub: response.user.id,
+        expiresIn: '1d',
+      },
+    )
+
+    return reply.status(200).send({
+      token,
+    })
   } catch (error) {
     if (error instanceof InvalidCredentials) {
-      return reply.status(401).send({
+      return reply.status(403).send({
         message: error.message,
       })
     }
