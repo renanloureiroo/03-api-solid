@@ -9,24 +9,29 @@ export async function checkInController(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const checkInBodySchema = z.object({
+  const checkInParamsSchema = z.object({
     gymId: z.string().uuid(),
-    userLatitude: z.number(),
-    userLongitude: z.number(),
+  })
+  const checkInBodySchema = z.object({
+    latitude: z.coerce.number().refine((value) => Math.abs(value) <= 90, {
+      message: 'Invalid latitude',
+    }),
+    longitude: z.coerce.number().refine((value) => Math.abs(value) <= 180, {
+      message: 'Invalid longitude',
+    }),
   })
 
   try {
-    const { gymId, userLatitude, userLongitude } = checkInBodySchema.parse(
-      request.body,
-    )
+    const { latitude, longitude } = checkInBodySchema.parse(request.body)
+    const { gymId } = checkInParamsSchema.parse(request.params)
 
     const checkInUseCase = makeCheckInUseCase()
 
     const response = await checkInUseCase.execute({
       gymId,
-      userLatitude,
-      userLongitude,
-      userId: 'id_user',
+      userLatitude: latitude,
+      userLongitude: longitude,
+      userId: request.user.sub,
     })
 
     return reply.status(201).send(response)

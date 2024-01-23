@@ -1,5 +1,6 @@
 import { MaxTime } from '@/use-cases/errors/max-time'
 import { ResourceNotFound } from '@/use-cases/errors/resource-not-found'
+import { makeValidateCheckInUseCase } from '@/use-cases/factories/make-validate-check-in-use-case'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
@@ -12,7 +13,13 @@ export async function validateCheckInController(
   })
 
   try {
-    const response = validateCheckInBodySchema.parse(request.body)
+    const { checkInId } = validateCheckInBodySchema.parse(request.params)
+
+    const validateCheckInUseCase = makeValidateCheckInUseCase()
+
+    const response = await validateCheckInUseCase.execute({
+      checkInId,
+    })
 
     return reply.status(200).send(response)
   } catch (error) {

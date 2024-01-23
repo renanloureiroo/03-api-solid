@@ -9,7 +9,7 @@ export async function getUserMetricsController(
     const getUserMetricsUseCase = makeGetUserMetricsUseCase()
 
     const response = await getUserMetricsUseCase.execute({
-      userId: 'user_id',
+      userId: request.user.sub,
     })
 
     return reply.status(200).send(response)

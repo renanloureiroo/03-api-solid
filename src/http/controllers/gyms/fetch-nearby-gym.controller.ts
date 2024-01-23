@@ -7,8 +7,12 @@ export async function fetchNearbyGymController(
   reply: FastifyReply,
 ) {
   const fetchNearbyGymQuerySchema = z.object({
-    latitude: z.number(),
-    longitude: z.number(),
+    latitude: z.coerce.number().refine((value) => Math.abs(value) <= 90, {
+      message: 'Invalid latitude',
+    }),
+    longitude: z.coerce.number().refine((value) => Math.abs(value) <= 180, {
+      message: 'Invalid longitude',
+    }),
   })
   try {
     const { latitude, longitude } = fetchNearbyGymQuerySchema.parse(

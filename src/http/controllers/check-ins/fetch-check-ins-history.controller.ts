@@ -18,7 +18,7 @@ export async function fetchCheckInsHistoryController(
 
     const response = await fetchCheckInsHistoryUseCase.execute({
       page,
-      userId: 'id_user',
+      userId: request.user.sub,
     })
 
     return reply.status(200).send(response)
