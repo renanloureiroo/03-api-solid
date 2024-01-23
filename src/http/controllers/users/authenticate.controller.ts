@@ -24,14 +24,32 @@ export async function authenticateController(
     const token = await reply.jwtSign(
       {},
       {
-        sub: response.user.id,
-        expiresIn: '1d',
+        sign: {
+          sub: response.user.id,
+        },
+      },
+    )
+    const refreshToken = await reply.jwtSign(
+      {},
+      {
+        sign: {
+          sub: response.user.id,
+        },
       },
     )
 
-    return reply.status(200).send({
-      token,
-    })
+    return reply
+
+      .status(200)
+      .setCookie('refreshToken', refreshToken, {
+        path: '/',
+        secure: true,
+        sameSite: true,
+        httpOnly: true,
+      })
+      .send({
+        token,
+      })
   } catch (error) {
     if (error instanceof InvalidCredentials) {
       return reply.status(403).send({

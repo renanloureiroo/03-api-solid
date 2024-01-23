@@ -17,6 +17,7 @@
     "test:e2e": "vitest run --dir src/http",
     "test:e2e:watch": "vitest --dir src/http",
     "pretest:e2e": " run-s test:create-prisma-environment test:install-prisma-environment",
+    "pretest:e2e:watch": " run-s test:create-prisma-environment test:install-prisma-environment",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui"
   },
@@ -44,6 +45,7 @@
     "vitest": "1.2.0"
   },
   "dependencies": {
+    "@fastify/cookie": "9.3.1",
     "@fastify/jwt": "8.0.0",
     "@prisma/client": "5.8.1",
     "@types/supertest": "6.0.2",
