@@ -22,7 +22,9 @@ export async function authenticateController(
     })
 
     const token = await reply.jwtSign(
-      {},
+      {
+        role: response.user.role,
+      },
       {
         sign: {
           sub: response.user.id,
@@ -30,7 +32,7 @@ export async function authenticateController(
       },
     )
     const refreshToken = await reply.jwtSign(
-      {},
+      { role: response.user.role },
       {
         sign: {
           sub: response.user.id,
