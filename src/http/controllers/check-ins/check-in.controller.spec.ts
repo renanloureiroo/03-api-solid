@@ -13,7 +13,8 @@ describe('Controllers, CheckInController', () => {
   })
 
   it('should be able to create a check-in', async () => {
-    const { token } = await createAndAuthenticateUser(app)
+    const { token } = await createAndAuthenticateUser(app, true)
+    const userMember = await createAndAuthenticateUser(app)
 
     const createGymResponse = await request(app.server)
       .post('/gyms')
@@ -32,7 +33,7 @@ describe('Controllers, CheckInController', () => {
         latitude: 40.7128,
         longitude: -74.006,
       })
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${userMember.token}`)
 
     expect(response.statusCode).toEqual(201)
     expect(response.body).toEqual(

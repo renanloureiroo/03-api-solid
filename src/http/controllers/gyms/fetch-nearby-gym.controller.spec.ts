@@ -13,7 +13,8 @@ describe('Controller: FetchNearbyGymController', () => {
   })
 
   it('should be able to fetch nearby gyms', async () => {
-    const { token } = await createAndAuthenticateUser(app)
+    const { token } = await createAndAuthenticateUser(app, true)
+    const userMember = await createAndAuthenticateUser(app)
 
     await request(app.server)
       .post('/gyms')
@@ -43,7 +44,7 @@ describe('Controller: FetchNearbyGymController', () => {
         latitude: 40.7234482,
         longitude: -74.0075681,
       })
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${userMember.token}`)
 
     expect(response.statusCode).toEqual(200)
     expect(response.body.gyms).toHaveLength(1)

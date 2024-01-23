@@ -19,6 +19,7 @@ describe('Controllers, CheckInController', () => {
 
   it('should be able to return check-ins history', async () => {
     const { token } = await createAndAuthenticateUser(app)
+    const userAdmin = await createAndAuthenticateUser(app, true)
 
     const createGymResponse = await request(app.server)
       .post('/gyms')
@@ -29,7 +30,7 @@ describe('Controllers, CheckInController', () => {
         latitude: 40.7128,
         longitude: -74.006,
       })
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${userAdmin.token}`)
 
     for (let i = 1; i < 6; i++) {
       vi.setSystemTime(new Date(2024, 0, i, 4, 18, 0))

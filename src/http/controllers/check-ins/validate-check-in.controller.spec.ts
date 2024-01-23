@@ -14,7 +14,7 @@ describe('Controllers: ValidateCheckInController', () => {
   it('should be able to validate check-in', async () => {
     const { token } = await createAndAuthenticateUser(app)
 
-    const gymUser = await createAndAuthenticateUser(app, {
+    const gymUser = await createAndAuthenticateUser(app, true, {
       name: 'John Doe Gym',
       email: 'johndoe_gym@email.com',
       password: '123456',
@@ -41,7 +41,7 @@ describe('Controllers: ValidateCheckInController', () => {
 
     const response = await request(app.server)
       .patch(`/check-ins/${checkInResponse.body.checkIn.id}/validate`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${gymUser.token}`)
 
     expect(response.statusCode).toEqual(200)
     expect(response.body).toEqual({
